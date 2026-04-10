@@ -1,3 +1,5 @@
+import { fetchCountries } from "./services/apiservices.js";
+
 let bodyElement = document.body;
 let moonIcon: HTMLElement|null = document.getElementById("moon_icon");
 
@@ -13,3 +15,5 @@ if(moonIcon!=null){
 }else{
     console.log("Moon icon element null");
 }
+
+fetchCountries();
