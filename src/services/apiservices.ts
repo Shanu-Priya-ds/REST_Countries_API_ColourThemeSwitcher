@@ -11,3 +11,4 @@ export async function fetchCountries(){
 catch(error :any){
     console.error(error);
 }
+}
