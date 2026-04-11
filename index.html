@@ -24,6 +24,21 @@
         </nav>
     </header>
     <main class="main">
+        <div id="searchFilter">
+        <div id="search-container">
+              <i class="fa-solid fa-magnifying-glass icon"></i>
+            <input type="text" name="search" placeholder="Serach for Country"/>
+        </div>
+        <select id="regionDropDown" aria-placeholder="Filter by Region">
+            <option value="" selected hidden>Filter by Region</option>
+            <option value="All">All Region</option>
+            <option value="Africa">Africa</option>
+            <option value="America">America</option>
+            <option value="Asia">Asia</option>
+            <option value="Europe">Europe</option>
+            <option value="Oceania">Oceania</option>
+        </select>
+        </div>
         <div id="countries"> <!--Add the country details programatically based on the API response-->
         </div>
     </main>

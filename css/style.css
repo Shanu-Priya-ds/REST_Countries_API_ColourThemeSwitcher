@@ -1,4 +1,4 @@
-.dark-mode {
+.dark-mode * {
     background-color: black;
     color: white;
 }
@@ -15,14 +15,14 @@ body {
 #countries {
     display: flex;
     gap: 3rem;
-     flex-wrap:wrap;
-   justify-content: space-around;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 
 .card {
+    /* display: block; */
     box-sizing: border-box;
-    width: 20%;
-    /* width is 20% of its parent, doent shrink based on content */
+    width: 15rem;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -40,4 +40,13 @@ img {
     max-width: 100%;
     /*image grow upto 100% of its parent's width, not beyond that. */
     height: auto;
+}
+
+.search-container{
+    position:relative;
+}
+
+.search-container >i {
+    position: absolute;
+    left: 10rem;
 }
