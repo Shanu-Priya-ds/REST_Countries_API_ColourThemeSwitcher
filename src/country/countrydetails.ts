@@ -11,7 +11,7 @@ export async function fetchAndCreateCountryDetails(countryCode: string | null | 
         // mainElement.innerHTML = "";
         let countriesList: Country[] = await fetchCountryByCode(countryCode);
         let country: Country | undefined = countriesList[0];
-        console.log(country);
+        console.log(country?.name);
         // console.log(country[0]);
         //create DOM elements
         if (country) {
@@ -35,7 +35,7 @@ export async function fetchAndCreateCountryDetails(countryCode: string | null | 
             let div1 = document.createElement("div");
             div1.className = "country-details";
 
-            createElementAndAppend("h2", country.name.common, div1);
+            createElementAndAppend("h1", country.name.common, div1);
 
             console.log(country.name.nativeName[firstLanguage]);
 
@@ -49,33 +49,39 @@ export async function fetchAndCreateCountryDetails(countryCode: string | null | 
                 } else
                     currencyList = currencyList + ',' + country.currencies[currency]?.name;
             }
+            let itemsContainer = document.createElement("section");
+            itemsContainer.classList = "items-container";
+            let div2 = document.createElement("div");
+            createDetailRowAndAppend("Native Name:", nativeName, div2);
+            createDetailRowAndAppend("Population:", `${country.population}`, div2);
+            createDetailRowAndAppend("Region:", country.region, div2);
+            createDetailRowAndAppend("Sub Region:", country.subregion, div2);
+            createDetailRowAndAppend("Capital:", country.capital.join(","), div2);
+            itemsContainer.appendChild(div2);
 
-            createDetailRowAndAppend("Native Name:", nativeName, div1);
-            createDetailRowAndAppend("Population:", `{country.population}`, div1);
-            createDetailRowAndAppend("Region:", country.region, div1);
-            createDetailRowAndAppend("Sub Region:", country.subregion, div1);
-            createDetailRowAndAppend("Capital:", country.capital.join(","), div1);
-            createDetailRowAndAppend("Top Level Domain:", country.tld.join(","), div1);
-            createDetailRowAndAppend("currencies:", currencyList, div1);
-            createDetailRowAndAppend("Languages:", languageList, div1);
+            let div3 = document.createElement("div");
+            createDetailRowAndAppend("Top Level Domain:", country.tld.join(","), div3);
+            createDetailRowAndAppend("currencies:", currencyList, div3);
+            createDetailRowAndAppend("Languages:", languageList, div3);
+            itemsContainer.appendChild(div3);
 
-            let bordercountries = createElement("div", `Border Countries:`);
+            div1.append(itemsContainer);
+
+            let div4 = document.createElement("div");
+            createElementAndAppend("strong",'Border Countries:',div4);
+            let bordercountries = document.createElement("div");
+            bordercountries.classList = "border-countries";
 
             for (let border in country.borders) {
                 let countryCode = country.borders[border];
                 console.log(countryCode);
-                // let countryObj = allCountriesArr.find((country) => {
-                //     if (country.cca3 === countryCode)
-                //         return country;
-                // });
-                //   console.log(countryObj?.name.common)
                 let countryName = getCountryName(countryCode);
                 let bordercountry = createElement("button", `${countryName}`);
                 let button = bordercountry as HTMLButtonElement;
                 if (countryCode) button.value = countryCode;
                 bordercountries.appendChild(bordercountry);
             }
-            bordercountries.addEventListener('click', (event) => {
+            bordercountries.addEventListener('click', (event) => { //move this code outide & add this as event delegation.
                 console.log(event.target);
                 // fetchAndCreateCountryDetails(event.target.value);
                 let bordercountry = event.target as HTMLButtonElement;
@@ -84,7 +90,8 @@ export async function fetchAndCreateCountryDetails(countryCode: string | null | 
                 }
                 handlePageRedirect(event);
             });
-            div1.appendChild(bordercountries);
+            div4.appendChild(bordercountries);
+            div1.appendChild(div4);
 
             div.appendChild(img);//append image
             div.appendChild(div1);//append details

@@ -40,6 +40,8 @@ img {
     max-width: 100%;
     /*image grow upto 100% of its parent's width, not beyond that. */
     height: auto;
+    cursor: pointer;
+    
 }
 
 .search-container{
@@ -66,4 +68,26 @@ img {
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+p{
+    margin: 0.5rem;
+}
+
+.border-countries{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    /* justify-content: space-between; */
+    gap:1rem;
+}
+
+.iitems-container{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5rem;
+}
+
+button{
+    cursor: pointer;
 }

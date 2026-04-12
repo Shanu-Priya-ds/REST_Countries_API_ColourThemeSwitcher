@@ -13,6 +13,6 @@ export function createDetailRowAndAppend(label:string, value:string|undefined, c
     let p = createElement("p","");
     createElementAndAppend("strong",label,p);
     if(value) 
-        p.append(value);
+        p.append(" "+value);
     container.append(p);
 }

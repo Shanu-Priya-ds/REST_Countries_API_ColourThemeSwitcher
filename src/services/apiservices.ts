@@ -16,6 +16,7 @@ catch(error :any){
 }
 
 export async function fetchCountryByCode(countryCode:string){
+    console.log("Fench country details for country code : " + countryCode);
      try{
     let countriesResonse= await fetch(`https://restcountries.com/v3.1/alpha/${countryCode}`);
     if(countriesResonse.ok){
