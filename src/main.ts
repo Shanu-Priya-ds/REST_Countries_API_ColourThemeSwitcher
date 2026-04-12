@@ -1,7 +1,7 @@
 import { fetchAndCreateCountryDetails } from "./country/countrydetails.js";
 import type { Country } from "./models/country.js";
 import { fetchCountries, fetchCountryByCode } from "./services/apiservices.js";
-import { createElement, createElementAndAppend } from "./utils/domUtils.js";
+import { createDetailRowAndAppend, createElement, createElementAndAppend } from "./utils/domUtils.js";
 
 let bodyElement = document.body;
 let moonIcon: HTMLElement | null = document.getElementById("moon_icon");
@@ -161,10 +161,10 @@ function createCountryCard(country: Country): DocumentFragment {
 
     let div1 = document.createElement("div");
 
-    createElementAndAppend("h3", country.name.common, div1);
-    createElementAndAppend("span", `Population:${country.population}`,div1);
-    createElementAndAppend("span", `Region:${country.region}`,div1);
-    createElementAndAppend("span",  `Capital:${country.capital}`,div1);
+    createElementAndAppend("h2", country.name.common, div1);
+    createDetailRowAndAppend("Population:",`${country.population}`,div1);
+    createDetailRowAndAppend( "Region:",`${country.region}`,div1);
+    createDetailRowAndAppend("Capital:",`${country.capital}`,div1);
     div1.className = "card-content";
 
     countryContainer.setAttribute("data-country-code", country.cca3);
