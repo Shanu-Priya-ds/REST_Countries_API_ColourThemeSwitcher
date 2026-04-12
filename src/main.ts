@@ -1,5 +1,7 @@
+import { fetchAndCreateCountryDetails } from "./country/countrydetails.js";
 import type { Country } from "./models/country.js";
-import { fetchCountries } from "./services/apiservices.js";
+import { fetchCountries, fetchCountryByCode } from "./services/apiservices.js";
+import { createElement, createElementAndAppend } from "./utils/domUtils.js";
 
 let bodyElement = document.body;
 let moonIcon: HTMLElement | null = document.getElementById("moon_icon");
@@ -7,7 +9,7 @@ let countriesDiv = document.getElementById("countries");
 let dropdown = document.getElementById("regionDropDown");
 let searchCountryElem = document.getElementById("search-country");
 let countriesFragment = document.createDocumentFragment();
-let mainElement:HTMLElement|null = document.getElementById("main");
+let mainElement: HTMLElement | null = document.getElementById("main");
 
 
 let countriesList: Country[];
@@ -38,25 +40,35 @@ if (searchCountryElem != null) {
     searchCountryElem.addEventListener("input", handleSearchCountry);
 }
 
-countriesDiv?.addEventListener('click',handlePageRedirect);
+countriesDiv?.addEventListener('click', handlePageRedirect);
 
-function handlePageRedirect(){
+export function handlePageRedirect(event: Event) {
+    console.log(event);
     //fetch the countrydetails page and insert the content to main conainter in index.html page. 
     fetch("countrydetails.html").
-    then((result)=>{
-        console.log(result)
-        return result.text();
-    }).then((html)=>{
-        console.log(html);
-        if(mainElement!=null)
-        mainElement.innerHTML=html;
-        //add event listener to redirect to main page
-        let backLink:HTMLElement | null = document.getElementById("backLink");
-        backLink?.addEventListener('click', ()=>{
-            window.location.href= "index.html";
-        })
-    });
-    
+        then((result) => {
+            //   console.log(result)
+            return result.text();
+        }).then((html) => {
+            console.log(html);
+            if (mainElement != null)
+                mainElement.innerHTML = html;
+            //add event listener to redirect to main page
+            let backLink: HTMLElement | null = document.getElementById("backLink");
+            backLink?.addEventListener('click', () => {
+                window.location.href = "index.html";
+
+            })
+            //populate country details
+            console.log(event);
+            let targetElement = event.target as HTMLElement;
+            let countryCode: string | null | undefined = targetElement.parentElement?.getAttribute("data-country-code");
+            console.log(targetElement.parentElement);
+            console.log(targetElement.parentElement?.getAttribute("data-country-code"))
+            if (!countryCode) countryCode = localStorage.getItem("countryCode");
+            fetchAndCreateCountryDetails(countryCode, mainElement);
+        });
+
 }
 
 /**
@@ -88,9 +100,9 @@ function handleFilterdCountries(event: Event) {
 function handleSearchCountry(event: Event) {
     let selectedInput = event.target as HTMLInputElement;
     let searchValue = selectedInput.value;
-    if(countriesDiv!=null) countriesDiv.innerHTML = "";//remove the existing cards
+    if (countriesDiv != null) countriesDiv.innerHTML = "";//remove the existing cards
     if (searchValue && searchValue !== "") {
-         createFilteredCountryElement(searchValue);
+        createFilteredCountryElement(searchValue);
 
     } else {
         //populate all the countries
@@ -107,6 +119,9 @@ async function createCountriesElement() {
     countriesList = await fetchCountries();
     let regionList: string[] = [];
     console.log(countriesList);
+    //update the value in localsotrage
+    localStorage.setItem("countryList", JSON.stringify(countriesList));
+
     //fetAllCountries();
     createAllCountriesElement();
 }
@@ -144,24 +159,24 @@ function createCountryCard(country: Country): DocumentFragment {
 
     let div1 = document.createElement("div");
 
-    let h3 = createElement("h3", country.name.common);
-    div1.appendChild(h3);
-    let span1 = createElement("span", `Population:${country.population}`)
-    div1.appendChild(span1);
-    let span2 = createElement("span", `Region:${country.region}`)
-    div1.appendChild(span2)
-    let span3 = createElement("span", `Capital:${country.capital}`)
-    div1.appendChild(span3)
+    // let h3 = createElement("h3", country.name.common);
+    // div1.appendChild(h3);
+    createElementAndAppend("h3", country.name.common, div1);
+    // let span1 = createElement("span", `Population:${country.population}`)
+    // div1.appendChild(span1);
+    createElementAndAppend("span", `Population:${country.population}`,div1);
+    // let span2 = createElement("span", `Region:${country.region}`)
+    // div1.appendChild(span2)
+    createElementAndAppend("span", `Region:${country.region}`,div1);
+
+    // let span3 = createElement("span", `Capital:${country.capital}`)
+    // div1.appendChild(span3)
+     createElementAndAppend("span",  `Capital:${country.capital}`,div1);
     div1.className = "card-content";
+
+    countryContainer.setAttribute("data-country-code", country.cca3);
     countryContainer.appendChild(div1);
 
     countriesFragment.append(countryContainer);
     return countriesFragment;
 }
-function createElement(elementName: string, innerText: string): HTMLElement {
-    let element = document.createElement(elementName);
-    element.innerText = innerText;
-    return element;
-}
-
-
