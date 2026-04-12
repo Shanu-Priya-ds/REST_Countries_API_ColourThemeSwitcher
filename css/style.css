@@ -14,7 +14,7 @@ body {
 
 #countries {
     display: flex;
-    gap: 3rem;
+    gap: 1rem;
     flex-wrap: wrap;
     justify-content: space-around;
 }
@@ -22,7 +22,7 @@ body {
 .card {
     /* display: block; */
     box-sizing: border-box;
-    width: 15rem;
+    width: 20rem;
     display: flex;
     flex-direction: column;
     gap: 20px;

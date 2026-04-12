@@ -6,6 +6,7 @@ let moonIcon: HTMLElement | null = document.getElementById("moon_icon");
 let countriesDiv = document.getElementById("countries");
 let dropdown = document.getElementById("regionDropDown");
 let searchCountryElem = document.getElementById("search-country");
+let countriesFragment = document.createDocumentFragment();
 
 let countriesList: Country[];
 
@@ -52,7 +53,8 @@ function handleFilterdCountries(event: Event) {
         } else {
             countriesList.forEach((country: Country) => {
                 if (selectedValue === country.region) {
-                    createCountryCard(country);
+                    let countryFragement = createCountryCard(country);
+                    countriesDiv?.append(countriesFragment);
                 }
             });
         }
@@ -63,18 +65,12 @@ function handleFilterdCountries(event: Event) {
 function handleSearchCountry(event: Event) {
     let selectedInput = event.target as HTMLInputElement;
     let searchValue = selectedInput.value;
+    countriesDiv.innerHTML = "";//remove the existing cards
     if (searchValue && searchValue !== "") {
-        //remove the existing cards
-        countriesDiv.innerHTML = "";
-        countriesList.forEach((country: Country) => {
-            console.log(country.name.common);
-            if (country.name.common.toLowerCase().startsWith(searchValue.toLowerCase())) {
-                createCountryCard(country);
-            }
-        })
+         createFilteredCountryElement(searchValue);
+
     } else {
         //populate all the countries
-        countriesDiv.innerHTML = "";
         createAllCountriesElement();
     }
 }
@@ -96,15 +92,26 @@ function createAllCountriesElement() {
     countriesList.forEach((country: Country) => {
         console.log(country.name.common);
         //create DOM elements
-        createCountryCard(country);
+        let fragment = createCountryCard(country);
+        countriesDiv?.append(fragment);
     });
+}
+
+function createFilteredCountryElement(searchValue: string) {
+    countriesList.forEach((country: Country) => {
+        console.log(country.name.common);
+        if (country.name.common.toLowerCase().startsWith(searchValue.toLowerCase())) {
+            let fragment = createCountryCard(country);
+            countriesDiv?.append(fragment);
+        }
+    })
 }
 
 /***
  * Creates country card continer with data populated
- * and append to the parent container
+ * and append to the document Fragemnt
  */
-function createCountryCard(country: Country) {
+function createCountryCard(country: Country): DocumentFragment {
     let countryContainer = document.createElement("div");
     countryContainer.className = "card";
     let img = document.createElement("img");
@@ -125,8 +132,8 @@ function createCountryCard(country: Country) {
     div1.className = "card-content";
     countryContainer.appendChild(div1);
 
-    countriesDiv?.append(countryContainer);
-
+    countriesFragment.append(countryContainer);
+    return countriesFragment;
 }
 function createElement(elementName: string, innerText: string): HTMLElement {
     let element = document.createElement(elementName);
