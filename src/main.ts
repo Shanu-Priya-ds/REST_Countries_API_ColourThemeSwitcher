@@ -7,6 +7,8 @@ let countriesDiv = document.getElementById("countries");
 let dropdown = document.getElementById("regionDropDown");
 let searchCountryElem = document.getElementById("search-country");
 let countriesFragment = document.createDocumentFragment();
+let mainElement:HTMLElement|null = document.getElementById("main");
+
 
 let countriesList: Country[];
 
@@ -34,6 +36,27 @@ if (dropdown != null) {
 
 if (searchCountryElem != null) {
     searchCountryElem.addEventListener("input", handleSearchCountry);
+}
+
+countriesDiv?.addEventListener('click',handlePageRedirect);
+
+function handlePageRedirect(){
+    //fetch the countrydetails page and insert the content to main conainter in index.html page. 
+    fetch("countrydetails.html").
+    then((result)=>{
+        console.log(result)
+        return result.text();
+    }).then((html)=>{
+        console.log(html);
+        if(mainElement!=null)
+        mainElement.innerHTML=html;
+        //add event listener to redirect to main page
+        let backLink:HTMLElement | null = document.getElementById("backLink");
+        backLink?.addEventListener('click', ()=>{
+            window.location.href= "index.html";
+        })
+    });
+    
 }
 
 /**
@@ -65,7 +88,7 @@ function handleFilterdCountries(event: Event) {
 function handleSearchCountry(event: Event) {
     let selectedInput = event.target as HTMLInputElement;
     let searchValue = selectedInput.value;
-    countriesDiv.innerHTML = "";//remove the existing cards
+    if(countriesDiv!=null) countriesDiv.innerHTML = "";//remove the existing cards
     if (searchValue && searchValue !== "") {
          createFilteredCountryElement(searchValue);
 
