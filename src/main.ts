@@ -2,13 +2,14 @@ import type { Country } from "./models/country.js";
 import { fetchCountries } from "./services/apiservices.js";
 
 let bodyElement = document.body;
-let moonIcon: HTMLElement|null = document.getElementById("moon_icon");
+let moonIcon: HTMLElement | null = document.getElementById("moon_icon");
 let countriesDiv = document.getElementById("countries");
 let dropdown = document.getElementById("regionDropDown");
+let searchCountryElem = document.getElementById("search-country");
 
-let countriesList:Country[];
+let countriesList: Country[];
 
-addEventListener("load",(event)=>{
+addEventListener("load", (event) => {
     //create container for each country
     createCountriesElement();
 })
@@ -17,38 +18,65 @@ addEventListener("load",(event)=>{
 //     bodyElement.classList.toggle("dark-mode");
 // })
 
-if(moonIcon!=null){
-    moonIcon.addEventListener("click",()=>{
+if (moonIcon != null) {
+    moonIcon.addEventListener("click", () => {
         bodyElement.classList.toggle("dark-mode");
     })
-}else{
+} else {
     console.log("Moon icon element null");
 }
 
 //add event listener to filter dropdown
-if(dropdown!=null){
+if (dropdown != null) {
     dropdown.addEventListener("change", handleFilterdCountries);
+}
+
+if (searchCountryElem != null) {
+    searchCountryElem.addEventListener("input", handleSearchCountry);
 }
 
 /**
  * create country card for the selected region
  * if all region option is selected, create cards for all the countires
  */
-function handleFilterdCountries(event:Event){
+function handleFilterdCountries(event: Event) {
     let selectedElemnt = event.target as HTMLInputElement;
     let selectedValue = selectedElemnt.value;
-    if(countriesDiv!=null){ // remove the existing DOM elements 
-        countriesDiv.innerHTML= "";
+    if (countriesDiv != null) { // remove the existing DOM elements 
+        countriesDiv.innerHTML = "";
     }
     //create filtered country card based on the sleected region
-    if(countriesList && countriesList.length>0){
-        countriesList.forEach((country:Country)=>{
-            if(selectedValue=="All" || selectedValue === country.region){
+    if (countriesList && countriesList.length > 0) {
+        if (selectedValue == "All") {
+            createAllCountriesElement();
+        } else {
+            countriesList.forEach((country: Country) => {
+                if (selectedValue === country.region) {
+                    createCountryCard(country);
+                }
+            });
+        }
+    }
+
+}
+
+function handleSearchCountry(event: Event) {
+    let selectedInput = event.target as HTMLInputElement;
+    let searchValue = selectedInput.value;
+    if (searchValue && searchValue !== "") {
+        //remove the existing cards
+        countriesDiv.innerHTML = "";
+        countriesList.forEach((country: Country) => {
+            console.log(country.name.common);
+            if (country.name.common.toLowerCase().startsWith(searchValue.toLowerCase())) {
                 createCountryCard(country);
             }
-        });
+        })
+    } else {
+        //populate all the countries
+        countriesDiv.innerHTML = "";
+        createAllCountriesElement();
     }
-    
 }
 
 /**
@@ -56,12 +84,16 @@ function handleFilterdCountries(event:Event){
  * Process each country object and create a country card 
  * and append to the parent container
  */
-async function createCountriesElement(){
-    countriesList =  await fetchCountries();
-    let regionList:string[] = [];
+async function createCountriesElement() {
+    countriesList = await fetchCountries();
+    let regionList: string[] = [];
     console.log(countriesList);
     //fetAllCountries();
-    countriesList.forEach((country:Country)=>{
+    createAllCountriesElement();
+}
+
+function createAllCountriesElement() {
+    countriesList.forEach((country: Country) => {
         console.log(country.name.common);
         //create DOM elements
         createCountryCard(country);
@@ -72,31 +104,31 @@ async function createCountriesElement(){
  * Creates country card continer with data populated
  * and append to the parent container
  */
-function createCountryCard(country:Country){
-        let countryContainer = document.createElement("div");
-        countryContainer.className = "card";
-        let img = document.createElement("img");
-        img.src = country.flags.svg;
-        img.alt = country.flags.alt;
-        countryContainer.append(img);
-        
-        let div1 = document.createElement("div");
-           
-        let h3 = createElement("h3", country.name.common);
-        div1.appendChild(h3);
-        let span1 = createElement("span", `Population:${country.population}`)
-        div1.appendChild(span1);
-        let span2 = createElement("span", `Region:${country.region}`)
-        div1.appendChild(span2)
-        let span3 = createElement("span", `Capital:${country.capital}`)
-        div1.appendChild(span3)
-        div1.className ="card-content";
-        countryContainer.appendChild(div1);
+function createCountryCard(country: Country) {
+    let countryContainer = document.createElement("div");
+    countryContainer.className = "card";
+    let img = document.createElement("img");
+    img.src = country.flags.svg;
+    img.alt = country.flags.alt;
+    countryContainer.append(img);
 
-        countriesDiv?.append(countryContainer);
-    
+    let div1 = document.createElement("div");
+
+    let h3 = createElement("h3", country.name.common);
+    div1.appendChild(h3);
+    let span1 = createElement("span", `Population:${country.population}`)
+    div1.appendChild(span1);
+    let span2 = createElement("span", `Region:${country.region}`)
+    div1.appendChild(span2)
+    let span3 = createElement("span", `Capital:${country.capital}`)
+    div1.appendChild(span3)
+    div1.className = "card-content";
+    countryContainer.appendChild(div1);
+
+    countriesDiv?.append(countryContainer);
+
 }
-function createElement(elementName:string, innerText:string):HTMLElement{
+function createElement(elementName: string, innerText: string): HTMLElement {
     let element = document.createElement(elementName);
     element.innerText = innerText;
     return element;
