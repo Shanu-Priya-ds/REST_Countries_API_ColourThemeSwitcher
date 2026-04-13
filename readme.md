@@ -45,9 +45,6 @@ Users should be able to:
 - Semantic HTML5 markup
 - CSS custom properties
 - Flexbox
-- Mobile-first workflow
-- [React](https://reactjs.org/) - JS library
-- [Next.js](https://nextjs.org/) - React framework
 - [Styled Components](https://cdnjs.com/libraries/font-awesome) - For fonts
 
 ### Initial typescript Project setup
@@ -105,8 +102,10 @@ Users should be able to:
 - Faced a challenge in retrieving the country details from the API response as it certain attributes has complex objects
 ### Solution
 - Created a new type for each object.
-    Ex:For name attribute created following types in model class
-           ``` type Name = {
+    Ex: For name attribute created following types in model class
+           
+           ```
+            type Name = {
                 common: string;
                 nativeName:{[key:string]:nativeNameObj};
             }
