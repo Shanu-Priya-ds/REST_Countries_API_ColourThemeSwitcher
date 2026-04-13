@@ -4,7 +4,6 @@ export async function fetchCountries() {
         if (countriesResonse.ok) {
             let countriesList = await countriesResonse.json();
             console.log(countriesList);
-            console.log(typeof countriesList);
             return countriesList;
         }
         else {
@@ -16,7 +15,7 @@ export async function fetchCountries() {
     }
 }
 export async function fetchCountryByCode(countryCode) {
-    console.log("Fench country details for country code : " + countryCode);
+    console.log("Fetch country details from country code : " + countryCode);
     try {
         let countriesResonse = await fetch(`https://restcountries.com/v3.1/alpha/${countryCode}`);
         if (countriesResonse.ok) {

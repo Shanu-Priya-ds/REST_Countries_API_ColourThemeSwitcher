@@ -53,7 +53,6 @@ if (searchCountryElem != null) {
 //ADD event listener to the parent container and delegates to all the country container
 countriesDiv?.addEventListener('click', handlePageRedirect);
 export function handlePageRedirect(event) {
-    console.log(event);
     let targetElement = event.target;
     if (targetElement.nodeName === "IMG" || targetElement.nodeName === "BUTTON") {
         //fetch the countrydetails page and insert the content to main conainter in index.html page. 
@@ -62,7 +61,6 @@ export function handlePageRedirect(event) {
             //   console.log(result)
             return result.text();
         }).then((html) => {
-            console.log(html);
             if (mainElement != null)
                 mainElement.innerHTML = html;
             //add event listener to redirect to main page
@@ -74,8 +72,6 @@ export function handlePageRedirect(event) {
             });
             //populate country details
             let countryCode = targetElement.parentElement?.getAttribute("data-country-code");
-            console.log(targetElement.parentElement);
-            console.log(targetElement.parentElement?.getAttribute("data-country-code"));
             if (!countryCode)
                 countryCode = localStorage.getItem("countryCode");
             fetchAndCreateCountryDetails(countryCode, mainElement);
@@ -136,16 +132,16 @@ async function createCountriesElement() {
 function createAllCountriesElement() {
     countriesList.forEach((country) => {
         //create DOM elements
-        let fragment = createCountryCard(country);
-        countriesDiv?.append(fragment);
+        createCountryCard(country);
     });
+    countriesDiv?.append(countriesFragment);
 }
 function createFilteredCountryElement(searchValue) {
     countriesList.forEach((country) => {
         if (country.name.common.toLowerCase().startsWith(searchValue.toLowerCase())) {
-            let fragment = createCountryCard(country);
-            countriesDiv?.append(fragment);
+            createCountryCard(country);
         }
+        countriesDiv?.append(countriesFragment);
     });
 }
 /***
