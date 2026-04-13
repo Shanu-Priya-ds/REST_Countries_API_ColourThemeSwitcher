@@ -3,6 +3,7 @@ import { fetchCountries, fetchCountryByCode } from "./services/apiservices.js";
 import { createDetailRowAndAppend, createElement, createElementAndAppend } from "./utils/domUtils.js";
 let bodyElement = document.body;
 let moonIcon = document.getElementById("moon_icon");
+let toggleBtn = document.getElementById("toggle-button");
 let countriesDiv = document.getElementById("countries");
 let dropdown = document.getElementById("regionDropDown");
 let searchCountryElem = document.getElementById("search-country");
@@ -12,13 +13,31 @@ let countriesList;
 addEventListener("load", (event) => {
     //create container for each country
     createCountriesElement();
+    //set the already applied theme if the page load initiate from details page
+    const theme = localStorage.getItem("theme");
+    if (theme && theme === "dark") {
+        document.body.classList.add("dark-mode");
+        moonIcon?.classList.replace("fa-moon", "fa-sun");
+        if (toggleBtn && toggleBtn.lastElementChild)
+            toggleBtn.lastElementChild.textContent = "Light Mode";
+    }
 });
-// bodyElement.addEventListener("click",()=>{
-//     bodyElement.classList.toggle("dark-mode");
-// })
-if (moonIcon != null) {
-    moonIcon.addEventListener("click", () => {
-        bodyElement.classList.toggle("dark-mode");
+if (toggleBtn != null) {
+    toggleBtn.addEventListener("click", () => {
+        const isDark = bodyElement.classList.toggle("dark-mode");
+        if (isDark) {
+            if (moonIcon)
+                moonIcon.classList.replace("fa-moon", "fa-sun");
+            if (toggleBtn.lastElementChild)
+                toggleBtn.lastElementChild.textContent = "Light Mode";
+            // localStorage.setItem("theme", "dark");
+        }
+        else {
+            if (moonIcon)
+                moonIcon.classList.replace("fa-sun", "fa-moon");
+            if (toggleBtn.lastElementChild)
+                toggleBtn.lastElementChild.textContent = "Dark Mode";
+        }
     });
 }
 else {
@@ -49,10 +68,11 @@ export function handlePageRedirect(event) {
             //add event listener to redirect to main page
             let backLink = document.getElementById("backLink");
             backLink?.addEventListener('click', () => {
+                let isDark = document.body.classList.contains("dark-mode");
+                localStorage.setItem("theme", isDark ? "dark" : "light");
                 window.location.href = "index.html";
             });
             //populate country details
-            console.log(event);
             let countryCode = targetElement.parentElement?.getAttribute("data-country-code");
             console.log(targetElement.parentElement);
             console.log(targetElement.parentElement?.getAttribute("data-country-code"));
@@ -108,7 +128,6 @@ function handleSearchCountry(event) {
 async function createCountriesElement() {
     countriesList = await fetchCountries();
     let regionList = [];
-    console.log(countriesList);
     //update the value in localsotrage
     localStorage.setItem("countryList", JSON.stringify(countriesList));
     //fetAllCountries();
@@ -116,7 +135,6 @@ async function createCountriesElement() {
 }
 function createAllCountriesElement() {
     countriesList.forEach((country) => {
-        console.log(country.name.common);
         //create DOM elements
         let fragment = createCountryCard(country);
         countriesDiv?.append(fragment);
@@ -124,7 +142,6 @@ function createAllCountriesElement() {
 }
 function createFilteredCountryElement(searchValue) {
     countriesList.forEach((country) => {
-        console.log(country.name.common);
         if (country.name.common.toLowerCase().startsWith(searchValue.toLowerCase())) {
             let fragment = createCountryCard(country);
             countriesDiv?.append(fragment);
